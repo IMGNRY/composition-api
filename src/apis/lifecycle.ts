@@ -11,20 +11,22 @@ function createLifeCycle(lifeCyclehook: string) {
   };
 }
 
-function createLifeCycles(lifeCyclehooks: string[], name: string) {
-  return (callback: Function) => {
-    const currentVue = getCurrentVue();
-    const vm = ensureCurrentVMInFn(name);
-    lifeCyclehooks.forEach(lifeCyclehook =>
-      injectHookOption(currentVue, vm, lifeCyclehook, callback)
-    );
-  };
-}
+// function createLifeCycles(lifeCyclehooks: string[], name: string) {
+//   return (callback: Function) => {
+//     const currentVue = getCurrentVue();
+//     const vm = ensureCurrentVMInFn(name);
+//     lifeCyclehooks.forEach(lifeCyclehook =>
+//       injectHookOption(currentVue, vm, lifeCyclehook, callback)
+//     );
+//   };
+// }
 
 function injectHookOption(Vue: VueConstructor, vm: ComponentInstance, hook: string, val: Function) {
   const options = vm.$options as any;
   const mergeFn = Vue.config.optionMergeStrategies[hook];
   options[hook] = mergeFn(options[hook], val);
+
+  console.log('hook:', hook);
 }
 
 // export const onCreated = createLifeCycle('created');
@@ -33,8 +35,10 @@ export const onMounted = createLifeCycle('mounted');
 export const onBeforeUpdate = createLifeCycle('beforeUpdate');
 export const onUpdated = createLifeCycle('updated');
 export const onBeforeUnmount = createLifeCycle('beforeDestroy');
+// export const onUnmounted = createLifeCycle('destroyed');
+export const onDestroyed = createLifeCycle('destroyed');
 // only one event will be fired between destroyed and deactivated when an unmount occurs
-export const onUnmounted = createLifeCycles(['destroyed', 'deactivated'], genName('unmounted'));
+// export const onUnmounted = createLifeCycles(['destroyed', 'deactivated'], genName('unmounted'));
 export const onErrorCaptured = createLifeCycle('errorCaptured');
 export const onActivated = createLifeCycle('activated');
 export const onDeactivated = createLifeCycle('deactivated');
